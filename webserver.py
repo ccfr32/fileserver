@@ -3,6 +3,7 @@
 # Copyright Jon Berg , turtlemeat.com
 # odified by nikomu @ code.google.com     
 
+import sys
 import string,cgi,time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -158,10 +159,10 @@ class yHandler(BaseHTTPRequestHandler):
             print e
             self.send_error(404,'POST to "%s" failed: %s' % (self.path, str(e)) )
 
-def main():
+def main(port):
 
     try:
-        server = HTTPServer(('', 8080), yHandler)
+        server = HTTPServer(('', port), yHandler)
         print 'started httpserver...'
         server.serve_forever()
     except KeyboardInterrupt:
@@ -169,5 +170,9 @@ def main():
         server.socket.close()
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    else:
+        port = 8080
+    main(port)
 
