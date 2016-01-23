@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright Jon Berg , turtlemeat.com
-# Modified by nikomu @ code.google.com     
+# odified by nikomu @ code.google.com     
 
 import string,cgi,time
 from os import curdir, sep
@@ -42,7 +42,7 @@ def make_index( relpath ):
 
 # -----------------------------------------------------------------------
 
-class MyHandler(BaseHTTPRequestHandler):
+class yHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
@@ -116,7 +116,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 # http://stackoverflow.com/questions/1417918/time-out-error-while-creating-cgi-fieldstorage-object     
                 fs = cgi.FieldStorage( fp = self.rfile, 
                                        headers = self.headers, # headers_, 
-                                       environ={ 'REQUEST_METHOD':'POST' } # all the rest will come from the 'headers' object,     
+                                       environ={ 'REQUEST_ETHOD':'POST' } # all the rest will come from the 'headers' object,     
                                        # but as the FieldStorage object was designed for CGI, absense of 'POST' value in environ     
                                        # will prevent the object from using the 'fp' argument !     
                                      )
@@ -147,10 +147,10 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             
-            self.wfile.write("<HTML><HEAD></HEAD><BODY>POST OK.<BR><BR>");
+            self.wfile.write("<HTL><HEAD></HEAD><BODY>POST OK.<BR><BR>");
             self.wfile.write( "File uploaded under name: " + os.path.split(fullname)[1] );
             self.wfile.write(  '<BR><A HREF=%s>back</A>' % ( UPLOAD_PAGE, )  )
-            self.wfile.write("</BODY></HTML>");
+            self.wfile.write("</BODY></HTL>");
             
             
         except Exception as e:
@@ -161,11 +161,11 @@ class MyHandler(BaseHTTPRequestHandler):
 def main():
 
     try:
-        server = HTTPServer(('', 8080), MyHandler)
+        server = HTTPServer(('', 8080), yHandler)
         print 'started httpserver...'
         server.serve_forever()
     except KeyboardInterrupt:
-        print '^C received, shutting down server'
+        print 'C received, shutting down server'
         server.socket.close()
 
 if __name__ == '__main__':
