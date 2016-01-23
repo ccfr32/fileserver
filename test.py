@@ -24,7 +24,7 @@ def test(c):
     fr=open(mfile,"rb").read()
     filecontent=base64.b64encode(fr)
     filemd5=md5.new(fr).hexdigest()
-    files = {'file': open(mfile,"rb")}
+    files = {'file1': open(mfile,"rb")}
     r = requests.post(Upload_URL,files=files,data={'path':'/upload'})
     print r.text   
 

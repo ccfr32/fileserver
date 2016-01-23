@@ -4,6 +4,7 @@
 #独立的文件服务器，采用tornado框架
 #wp 2015-08-27
 
+import datetime
 import tornado.ioloop
 import tornado.web
 import os,re,md5,base64,tempfile,shutil
@@ -14,7 +15,7 @@ import sys
 from tornado.options import define, options
 
 define("port", default=9005, help="default: 9000, required runserver", type=int)
-FileStoragePath="/tmp/files/"
+FileStoragePath="/data/files/"
 
 def checkAcess(fileName):
     realpath=os.path.realpath(fileName)
@@ -31,15 +32,9 @@ def ajaxCheckAcess(self,fileName):
     return True    
 
 def saveToFile(saveFile,content):
-    try:
-        tfn=tempfile.mktemp()
-        tf=open(tfn,'w+b')
-        tf.write(content)
-        tf.close()
-        os.rename(tfn,saveFile)
-        return True
-    except:
-        return False        
+    with open(saveFile, "w+b") as fp:
+        fp.write(content)
+
 
 def getFileInfo(infofile):
     info={}
@@ -84,30 +79,29 @@ class APIDownloadHandler(tornado.web.RequestHandler):
 #上传文件 ，参数 files 需要上传的文件, path 保存的路径
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
-        uploadfile = self.request.files['file'][0]
-        path = self.get_argument('path') 
-        if path ==None or path=="":
-            raise tornado.web.HTTPError(500, u"你必需指定一个保存目录")
-        if path.startswith('/'): path='.'+path    
+        uploadfile = self.request.files['file1'][0]
         fname = uploadfile['filename']
-        savePath = os.path.join(FileStoragePath,path)
+        path = datetime.datetime.now().strftime("%M/%d")
+        savePath = os.path.join(FileStoragePath, path)
         saveFile = os.path.join(savePath,fname)
         checkAcess(saveFile) 
         if os.path.exists(saveFile):
             raise tornado.web.HTTPError(500, u"文件在目录中已经存在")
         if not os.path.exists(savePath):
             os.makedirs(savePath)
-        if saveToFile(saveFile,uploadfile['body']):
+        try:
+            saveToFile(saveFile,uploadfile['body'])
             resp = {"original": "demo.jpg",
                     "name": "demo.jpg",
-                    "url": saveFile,
+                    "url": "/fileserver/download/" + os.path.join(path, fname),
                     "size": "99697",
                     "type": "jpg",
                     "state":"SUCCESS"}
             self.write(json.dumps(resp))
             self.finish()
-        else:
-            raise tornado.web.HTTPError(500, u"上传文件失败.")     
+        except Exception as e:
+            raise e
+
 
 #API 上传文件
 #参数 {"filename":"xxx.jpg","path":"/upload/","content":"xxxxxxx","md5":“xxxxxxxxxxxxxx”}
