@@ -4,7 +4,7 @@ import urllib,urllib2,json,base64,md5,time
 from multiprocessing import Pool
 import requests
 
-Base_URL        = "http://127.0.0.1:8888/"
+Base_URL        = "http://127.0.0.1:9005/fileserver/"
 DownLoad_URL    = Base_URL+"download/"
 DownLoad_API_URL= Base_URL+"api/download/"
 Upload_URL      = Base_URL+"upload/"

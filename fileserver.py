@@ -267,22 +267,30 @@ class APIInfoHandler(tornado.web.RequestHandler):
             return          
         self.finish(json.dumps({"success":1,"message":getFileInfo(infofile)}))
 
-application = tornado.web.Application([
-    (r"/", MainHandler),
-    (r"/download/(.*)",tornado.web.StaticFileHandler, {"path": FileStoragePath},),
-    (r"/api/download/",APIDownloadHandler),
-    (r"/upload/",UploadHandler),
-    (r"/api/upload/",APIUploadHandler),
-    (r"/delete/",DeleteHandler),
-    (r"/api/delete/",APIDeleteHandler),
-    (r"/list/",ListHandler),
-    (r"/api/list/",APIListHandler),
-    (r"/md5/",MD5Handler),
-    (r"/api/md5/",APIMD5Handler),
-    (r"/info/",InfoHandler),
-    (r"/api/info/",APIInfoHandler),
-])
 
+handlers = [
+    [r"/", MainHandler],
+    [r"/download/(.*)",tornado.web.StaticFileHandler, {"path": FileStoragePath},],
+    [r"/api/download/",APIDownloadHandler],
+    [r"/upload/",UploadHandler],
+    [r"/api/upload/",APIUploadHandler],
+    [r"/delete/",DeleteHandler],
+    [r"/api/delete/",APIDeleteHandler],
+    [r"/list/",ListHandler],
+    [r"/api/list/",APIListHandler],
+    [r"/md5/",MD5Handler],
+    [r"/api/md5/",APIMD5Handler],
+    [r"/info/",InfoHandler],
+    [r"/api/info/",APIInfoHandler],
+]
+_url_prefix = '/fileserver'
+for i in handlers:
+    i[0] = _url_prefix + i[0]
+    
+    
+    
+application = tornado.web.Application(handlers)
+    
 if __name__ == "__main__":
     print("Start File Server on Port %s"%options.port)
     application.listen(options.port)
