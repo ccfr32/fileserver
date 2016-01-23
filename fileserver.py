@@ -98,7 +98,14 @@ class UploadHandler(tornado.web.RequestHandler):
         if not os.path.exists(savePath):
             os.makedirs(savePath)
         if saveToFile(saveFile,uploadfile['body']):
-            self.finish(u"文件上传成功")
+            resp = {"original": "demo.jpg",
+                    "name": "demo.jpg",
+                    "url": saveFile,
+                    "size": "99697",
+                    "type": "jpg",
+                    "state":"SUCCESS"}
+            self.write(json.dumps(resp))
+            self.finish()
         else:
             raise tornado.web.HTTPError(500, u"上传文件失败.")     
 
