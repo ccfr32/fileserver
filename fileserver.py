@@ -10,7 +10,10 @@ import os,re,md5,base64,tempfile,shutil
 import json
 from  tornado.escape import json_decode
 from  tornado.escape import json_encode
+import sys
+from tornado.options import define, options
 
+define("port", default=9005, help="default: 9000, required runserver", type=int)
 FileStoragePath="/tmp/files/"
 
 def checkAcess(fileName):
@@ -281,8 +284,7 @@ application = tornado.web.Application([
 ])
 
 if __name__ == "__main__":
-    port = 8888
-    print("Start File Server on Port %s"%port)
-    application.listen(port)
+    print("Start File Server on Port %s"%options.port)
+    application.listen(options.port)
     tornado.ioloop.IOLoop.current().start()
 
