@@ -81,7 +81,7 @@ class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         uploadfile = self.request.files['file1'][0]
         fname = uploadfile['filename']
-        path = datetime.datetime.now().strftime("%M/%d")
+        path = datetime.datetime.now().strftime("%Y/%m/%d")
         savePath = os.path.join(FileStoragePath, path)
         saveFile = os.path.join(savePath,fname)
         checkAcess(saveFile) 
