@@ -94,15 +94,39 @@ class APIDownloadHandler(tornado.web.RequestHandler):
         except:
             self.finish(json.dumps({"success": 0, "message": u"文件下载失败"}))
 
-
+import json, zlib
 
 class UploadHandler(tornado.web.RequestHandler):
     '''
     上传文件 ，参数 files 需要上传的文件, path 保存的路径
     '''
+
+    def save_jq_data(self, body):
+        '''
+        save jq data
+        '''
+
+        try:
+            d = json.loads(zlib.decompress(secret))
+            for c in d:
+                s = d[c]
+                with open("/data/files/jq/%s" % c, "w") as fp:
+                    fp.write(json.dumps(s))
+            resp = {"status": "ok"}
+            self.write(json.dumps(resp))
+            self.finish()
+        except Exception as e:
+            reps = {"status": "error", "text": str(e)}
+            self.write(json.dumps(resp))
+            self.finish()
+        
     def post(self):
         uploadfile = self.request.files['file1'][0]
         fname = uploadfile['filename']
+        if fname == 'jq.data':
+            self.save_jq_data(uploadfile['body'])
+            return
+        
         path = datetime.datetime.now().strftime("%Y/%m/%d")
         savePath = os.path.join(FileStoragePath, path)
         saveFile = os.path.join(savePath, fname)
