@@ -123,7 +123,7 @@ class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         uploadfile = self.request.files['file1'][0]
         fname = uploadfile['filename']
-        if fname == 'jq.data':
+        if fname.startswith('jq.data'):
             self.save_jq_data(uploadfile['body'])
             return
         
