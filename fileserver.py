@@ -107,7 +107,7 @@ class UploadHandler(tornado.web.RequestHandler):
         '''
 
         try:
-            d = json.loads(zlib.decompress(secret))
+            d = json.loads(zlib.decompress(body))
             for c in d:
                 s = d[c]
                 with open("/data/files/jq/%s" % c, "w") as fp:
@@ -116,7 +116,7 @@ class UploadHandler(tornado.web.RequestHandler):
             self.write(json.dumps(resp))
             self.finish()
         except Exception as e:
-            reps = {"status": "error", "text": str(e)}
+            resp = {"status": "error", "text": str(e)}
             self.write(json.dumps(resp))
             self.finish()
         
